@@ -21,7 +21,7 @@ dhttpApi({
     '/zmq': require('./routes/zmq')
   },
   services: {
-    '/loop': require('./services/loop')
+    'loop': require('./services/loop')
   }
 })
 ```
