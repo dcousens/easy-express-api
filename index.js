@@ -7,8 +7,10 @@ let debugWare = require('debug-ware')
 let express = require('express')
 let series = require('run-series')
 
-function build ({ https, port, routes, services }, done) {
-  let debug = _debug('api')
+function build ({ name, https, port, routes, services }, done) {
+  name = name || 'api'
+
+  let debug = _debug(name)
   let app = express()
   app.disable('etag')
   app.disable('x-powered-by')
@@ -53,7 +55,7 @@ function build ({ https, port, routes, services }, done) {
       if (!routes) return next()
 
       let parent = new express.Router()
-      let debug = _debug('router')
+      let debug = _debug('routes')
 
       // debug logging
       parent.use(debugWare(debug))
