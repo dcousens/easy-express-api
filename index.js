@@ -36,15 +36,21 @@ function API ({ https, port, routes, services }, callback) {
     (callback) => {
       if (!services) return callback()
 
-      services((err) => {
+      let callbacks = Object.keys(services).map((name) => {
+        let module = services[name]
+
+        return (callback) => module(callback)
+      })
+
+      series(callbacks, (err) => {
         if (err) return callback(err)
 
         debug('Services initialized')
         callback()
       })
     },
-    (callback) => {
-      if (!routes) return callback()
+    (next) => {
+      if (!routes) return next()
 
       let parent = new express.Router()
       let debug = _debug('router')
@@ -52,14 +58,14 @@ function API ({ https, port, routes, services }, callback) {
       // debug logging
       parent.use(debugWare(debug))
 
-      let routeCallbacks = Object.keys(routes).map((path) => {
+      let callbacks = Object.keys(routes).map((path) => {
         let module = routes[path]
 
         return (callback) => module(debug, callback)
       })
 
-      series(routeCallbacks, (err, routers) => {
-        if (err) return callback(err)
+      series(callbacks, (err, routers) => {
+        if (err) return next(err)
 
         for (let path in routers) {
           parent.use(path, routers[path])
@@ -80,7 +86,7 @@ function API ({ https, port, routes, services }, callback) {
         app.use(parent)
         debug('Routes initialized')
 
-        callback(null, parent)
+        next(null, parent)
       })
     }
   ], (err) => {
