@@ -1,0 +1,32 @@
+{
+  "name": "dhttp-api",
+  "version": "1.0.0",
+  "description": "A biased, yet convenient express-based wrapper for APIs (with attachable services).",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard",
+    "test": "npm run lint && npm run unit",
+    "unit": ""
+  },
+  "keywords": [],
+  "homepage": "https://github.com/dcousens/dhttp-api",
+  "bugs": {
+    "url": "https://github.com/dcousens/dhttp-api/issues"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dcousens/dhttp-api.git"
+  },
+  "author": "Daniel Cousens",
+  "devDependencies": {
+    "standard": "*"
+  },
+  "dependencies": {
+    "cors": "^2.8.1",
+    "debug": "^2.3.3",
+    "debug-ware": "^1.2.4",
+    "express": "^4.14.0",
+    "run-series": "^1.1.4"
+  }
+}
