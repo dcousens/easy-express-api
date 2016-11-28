@@ -63,16 +63,20 @@ function build ({ name, https, port, routes, services }, done) {
       let callbacks = Object.keys(routes).map((path) => {
         let module = routes[path]
 
-        return (callback) => module(debug, callback)
+        return (callback) => {
+          return module(debug, (err, router) => {
+            callback(err, { path, router })
+          })
+        }
       })
 
-      series(callbacks, (err, routers) => {
+      series(callbacks, (err, results) => {
         if (err) return next(err)
 
-        for (let path in routers) {
-          parent.use(path, routers[path])
+        results.forEach(({ path, router }) => {
+          parent.use(path, router)
           debug(`${path} initialized`)
-        }
+        })
 
         // last-ditch error-handling
         parent.use(function (err, req, res, next) {
