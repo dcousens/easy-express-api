@@ -1,6 +1,6 @@
 # dhttp-api
 
-A biased, yet convenient express-based wrapper for APIs (with attached services).
+A biased express wrapper for building APIs (with attached services).
 
 
 ## Examples

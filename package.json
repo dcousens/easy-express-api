@@ -1,7 +1,7 @@
 {
   "name": "dhttp-api",
   "version": "1.0.0",
-  "description": "A biased, yet convenient express-based wrapper for APIs (with attachable services).",
+  "description": "A biased express wrapper for building APIs (with attached services).",
   "main": "index.js",
   "scripts": {
     "lint": "standard",
