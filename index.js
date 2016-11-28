@@ -7,7 +7,7 @@ let debugWare = require('debug-ware')
 let express = require('express')
 let series = require('run-series')
 
-function API ({ https, port, routes, services }, callback) {
+function build ({ https, port, routes, services }, done) {
   let debug = _debug('api')
   let app = express()
   app.disable('etag')
@@ -91,13 +91,13 @@ function API ({ https, port, routes, services }, callback) {
     }
   ], (err) => {
     if (err) debug(err)
-    if (err) return callback(err)
+    if (err) return done && done(err)
 
     server.listen(port || 8080)
     debug('Listening')
 
-    callback(null, server)
+    if (done) done(null, server)
   })
 }
 
-module.exports = API
+module.exports = build
