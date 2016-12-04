@@ -1,14 +1,13 @@
 let _debug = require('debug')
 let _http = require('http')
 let _https = require('https')
-
 let cors = require('cors')
 let debugWare = require('debug-ware')
 let express = require('express')
 let series = require('run-series')
 
 function build ({ name, https, port, routes, services }, done) {
-  name = name || 'api'
+  name = name || ''
 
   let debug = _debug(name)
   let app = express()
@@ -55,7 +54,7 @@ function build ({ name, https, port, routes, services }, done) {
       if (!routes) return next()
 
       let parent = new express.Router()
-      let debug = _debug('routes')
+      let debug = _debug(`${name}-routes`)
 
       // debug logging
       parent.use(debugWare(debug))
@@ -64,7 +63,7 @@ function build ({ name, https, port, routes, services }, done) {
         let module = routes[path]
 
         return (callback) => {
-          return module(debug, (err, router) => {
+          module(debug, (err, router) => {
             callback(err, { path, router })
           })
         }
