@@ -4,7 +4,7 @@ let _https = require('https')
 let cors = require('cors')
 let debugWare = require('debug-ware')
 let express = require('express')
-let series = require('run-series')
+let parallel = require('run-parallel')
 
 function build ({ name, https, port, routes, services }, done) {
   name = name || ''
@@ -33,17 +33,17 @@ function build ({ name, https, port, routes, services }, done) {
     app(req, res)
   })
 
-  series([
+  parallel([
     (callback) => {
       if (!services) return callback()
 
-      let callbacks = Object.keys(services).map((name) => {
-        let module = services[name]
+      let callbacks = Object.keys(services).map((serviceName) => {
+        let module = services[serviceName]
 
         return (callback) => module(callback)
       })
 
-      series(callbacks, (err) => {
+      parallel(callbacks, (err) => {
         if (err) return callback(err)
 
         debug('Services initialized')
@@ -69,7 +69,7 @@ function build ({ name, https, port, routes, services }, done) {
         }
       })
 
-      series(callbacks, (err, results) => {
+      parallel(callbacks, (err, results) => {
         if (err) return next(err)
 
         results.forEach(({ path, router }) => {

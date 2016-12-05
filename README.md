@@ -1,15 +1,14 @@
-# dhttp-api
-
+# easy-api
 A biased express wrapper for building APIs (with attached services).
 
 
 ## Examples
 
 ``` javascript
-let dhttpApi = require('dhttp-api')
+let easyApi = require('easy-api')
 let fs = require('fs')
 
-dhttpApi({
+easyApi({
   https: process.env.HTTPS_CERT ? {
     ca: fs.readFileSync(process.env.HTTPS_CA),
     cert: fs.readFileSync(process.env.HTTPS_CERT),
