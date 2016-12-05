@@ -1,5 +1,5 @@
 {
-  "name": "dhttp-api",
+  "name": "easy-api",
   "version": "1.0.0",
   "description": "A biased express wrapper for building APIs (with attached services).",
   "main": "index.js",
@@ -9,14 +9,14 @@
     "unit": ""
   },
   "keywords": [],
-  "homepage": "https://github.com/dcousens/dhttp-api",
+  "homepage": "https://github.com/dcousens/easy-api",
   "bugs": {
-    "url": "https://github.com/dcousens/dhttp-api/issues"
+    "url": "https://github.com/dcousens/easy-api/issues"
   },
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dcousens/dhttp-api.git"
+    "url": "https://github.com/dcousens/easy-api.git"
   },
   "author": "Daniel Cousens",
   "devDependencies": {
@@ -27,6 +27,6 @@
     "debug": "^2.3.3",
     "debug-ware": "^1.2.4",
     "express": "^4.14.0",
-    "run-series": "^1.1.4"
+    "run-parallel": "^1.1.6"
   }
 }
