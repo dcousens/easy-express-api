@@ -36,15 +36,20 @@ function build ({ debug, https, port, routes, services }, done) {
       let callbacks = Object.keys(services).map((serviceName) => {
         let module = services[serviceName]
 
-        return (callback) => module(callback)
+        return (callback) => module(debug, (err) => {
+          if (err) return callback(err)
+
+          if (debug) debug(`Services... ${serviceName} initialized`)
+          callback(err)
+        })
       })
 
-      if (debug) debug('Services... initializing')
+      if (debug) debug('Services initializing')
 
       parallel(callbacks, (err) => {
         if (err) return next(err)
 
-        if (debug) debug('Services... initialized')
+        if (debug) debug('Services initialized')
         next()
       })
     },
@@ -61,19 +66,21 @@ function build ({ debug, https, port, routes, services }, done) {
 
         return (callback) => {
           module(debug, (err, router) => {
-            callback(err, { path, router })
+            if (err) return callback(err)
+            if (debug) debug(`Routes... ${path} initialized`)
+
+            callback(null, { path, router })
           })
         }
       })
 
-      if (debug) debug(`Routes... initializing`)
+      if (debug) debug(`Routes initializing`)
 
       parallel(callbacks, (err, results) => {
         if (err) return next(err)
 
         results.forEach(({ path, router }) => {
           parent.use(path, router)
-          if (debug) debug(`Routes... ${path} initialized`)
         })
 
         // last-ditch error-handling
@@ -88,7 +95,7 @@ function build ({ debug, https, port, routes, services }, done) {
         })
 
         app.use(parent)
-        if (debug) debug('Routes... initialized')
+        if (debug) debug('Routes initialized (+ added)')
 
         next(null, parent)
       })
