@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "cors": "^2.8.1",
-    "debug": "^2.3.3",
     "debug-ware": "^1.2.4",
     "express": "^4.14.0",
     "run-parallel": "^1.1.6"
