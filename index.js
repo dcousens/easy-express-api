@@ -33,23 +33,26 @@ function build ({ debug, https, port, routes, services }, done) {
     (next) => {
       if (!services) return next()
 
-      let callbacks = Object.keys(services).map((serviceName) => {
+      let serviceNames = Object.keys(services)
+      if (serviceNames.length === 0) return next()
+
+      let callbacks = serviceNames.map((serviceName) => {
         let module = services[serviceName]
 
         return (callback) => module(debug, (err) => {
           if (err) return callback(err)
 
-          if (debug) debug(`Services... ${serviceName} initialized`)
+          if (debug) debug('Services', `${serviceName} running`)
           callback(err)
         })
       })
 
-      if (debug) debug('Services initializing')
+      if (debug) debug('Services', 'Initializing')
 
       parallel(callbacks, (err) => {
         if (err) return next(err)
 
-        if (debug) debug('Services initialized')
+        if (debug) debug('Services', 'Initialized')
         next()
       })
     },
@@ -57,24 +60,26 @@ function build ({ debug, https, port, routes, services }, done) {
       if (!routes) return next()
 
       let parent = new express.Router()
+      let routePaths = Object.keys(routes)
+      if (routePaths.length === 0) return next()
 
       // optional: debug logging
       if (debug) parent.use(debugWare(debug))
 
-      let callbacks = Object.keys(routes).map((path) => {
+      let callbacks = routePaths.map((path) => {
         let module = routes[path]
 
         return (callback) => {
           module(debug, (err, router) => {
             if (err) return callback(err)
-            if (debug) debug(`Routes... ${path} initialized`)
+            if (debug) debug('Routes', `${path} ready`)
 
             callback(null, { path, router })
           })
         }
       })
 
-      if (debug) debug(`Routes initializing`)
+      if (debug) debug('Routes', 'Initializing')
 
       parallel(callbacks, (err, results) => {
         if (err) return next(err)
@@ -95,7 +100,7 @@ function build ({ debug, https, port, routes, services }, done) {
         })
 
         app.use(parent)
-        if (debug) debug('Routes initialized (+ added)')
+        if (debug) debug('Routes', 'Initialized (+ added)')
 
         next(null, parent)
       })
