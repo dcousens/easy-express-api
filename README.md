@@ -5,10 +5,12 @@ A biased express wrapper for building APIs (with attached services).
 ## Examples
 
 ``` javascript
+let debug = require('debug')
 let easyApi = require('easy-api')
 let fs = require('fs')
 
 easyApi({
+  debug: debug('myApi'), // optional
   https: process.env.HTTPS_CERT ? {
     ca: fs.readFileSync(process.env.HTTPS_CA),
     cert: fs.readFileSync(process.env.HTTPS_CERT),
