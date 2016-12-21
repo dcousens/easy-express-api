@@ -25,6 +25,11 @@ function build ({ debug, https, port, routes, services }, done) {
     let res = new _http.ServerResponse(req)
     res.assignSocket(socket)
 
+    // assign res.ws for easy websocket detection
+    if (req.headers && /websocket/i.test(req.headers.upgrade)) {
+      req.ws = true
+    }
+
     res.on('finish', () => res.socket.destroy())
     app(req, res)
   })
