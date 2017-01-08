@@ -27,7 +27,7 @@ function build ({ debug, https, port, routes, services }, done) {
 
     // assign res.ws for easy websocket detection
     if (req.headers && /websocket/i.test(req.headers.upgrade)) {
-      req.ws = true
+      req.ws = res.socket
     }
 
     res.on('finish', () => res.socket.destroy())
