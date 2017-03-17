@@ -40,25 +40,19 @@ function build ({ debug, https, port, routes, services }, done) {
 
       let serviceNames = Object.keys(services)
       if (serviceNames.length === 0) return next()
+      if (debug) debug('Services', 'Initializing')
 
-      let callbacks = serviceNames.map((serviceName) => {
+      parallel(serviceNames.map((serviceName) => {
         let module = services[serviceName]
 
-        return (callback) => module(debug, (err) => {
+        return (callback) => module((err) => {
           if (err) return callback(err)
-
           if (debug) debug('Services', `${serviceName} running`)
           callback(err)
         })
-      })
-
-      if (debug) debug('Services', 'Initializing')
-
-      parallel(callbacks, (err) => {
-        if (err) return next(err)
-
-        if (debug) debug('Services', 'Initialized')
-        next()
+      }), (err) => {
+        if (!err && debug) debug('Services', 'Initialized')
+        next(err)
       })
     },
     (next) => {
@@ -69,24 +63,23 @@ function build ({ debug, https, port, routes, services }, done) {
       if (routePaths.length === 0) return next()
 
       // optional: debug logging
-      if (debug) parent.use(debugWare(debug))
+      if (debug) {
+        parent.use(debugWare(debug))
+        debug('Routes', 'Initializing')
+      }
 
-      let callbacks = routePaths.map((path) => {
+      parallel(routePaths.map((path) => {
         let module = routes[path]
 
         return (callback) => {
-          module(debug, (err, router) => {
+          module((err, router) => {
             if (err) return callback(err)
             if (debug) debug('Routes', `${path} ready`)
 
             callback(null, { path, router })
           })
         }
-      })
-
-      if (debug) debug('Routes', 'Initializing')
-
-      parallel(callbacks, (err, results) => {
+      }), (err, results) => {
         if (err) return next(err)
 
         results.forEach(({ path, router }) => {
