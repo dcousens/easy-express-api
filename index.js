@@ -105,7 +105,8 @@ function build ({ debug, https, port, routes, services }, done) {
     }
   ], (err) => {
     if (err && debug) debug(err)
-    if (err) return done && done(err)
+    if (err && done) return done(err)
+    if (err) throw err
 
     server.listen(port || 8080)
     if (debug) debug('Listening')
