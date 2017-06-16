@@ -1,4 +1,4 @@
-# easy-api
+# easy-express-api
 A biased express wrapper for building APIs (with attached services).
 
 
