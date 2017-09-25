@@ -11,6 +11,8 @@ npm i debug https://github.com/dcousens/easy-express-api.git
 ## Examples
 
 ``` javascript
+require('dotenv').config()
+
 let debug = require('debug')
 let easyApi = require('easy-express-api')
 let fs = require('fs')
