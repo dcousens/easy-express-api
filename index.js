@@ -72,7 +72,9 @@ function build ({ debug, https, port, routes, services }, done) {
         let module = routes[path]
 
         return (callback) => {
-          module((err, router) => {
+          let router = new express.Router()
+
+          module(router, (err) => {
             if (err) return callback(err)
             if (debug) debug('Routes', `${path} ready`)
 
