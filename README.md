@@ -34,11 +34,10 @@ easyApi({
 ```
 
 Where each `route` is a function, with a fresh `router = new Express.Router()`:
-
 ``` js
 // ...
 
-function (router, callback) {
+module.exports = function (router, callback) {
 	router.get('/', (req, res) => {
 		res.status(200)
 	})
@@ -51,7 +50,7 @@ function (router, callback) {
 And each `service` is a function:
 
 ``` js
-function (callback) {
+module.exports = function (callback) {
 	// ... your service initialization here
 	setInterval(() => {
 		// ...
