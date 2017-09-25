@@ -33,17 +33,18 @@ easyApi({
 })
 ```
 
-Where each `route` is a function:
+Where each `route` is a function, with a fresh `router = new Express.Router()`:
 
 ``` js
 // ...
 
-function (debug, callback) {
-	let router = new express.Router()
-
+function (router, callback) {
+	router.get('/', (req, res) => {
+		res.status(200)
+	})
 	// ...
 
-	callback(null, router)
+	callback(null || err)
 }
 ```
 
