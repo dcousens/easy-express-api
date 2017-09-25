@@ -6,7 +6,7 @@ A biased express wrapper for building APIs (with attached services).
 
 ``` javascript
 let debug = require('debug')
-let easyApi = require('easy-api')
+let easyApi = require('easy-express-api')
 let fs = require('fs')
 
 easyApi({
