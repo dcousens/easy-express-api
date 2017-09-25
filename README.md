@@ -4,7 +4,7 @@ A biased express wrapper for building APIs (with attached services).
 
 ## Installation
 ``` bash
-npm i debug https://github.com/dcousens/easy-express-api.git
+npm i debug dotenv https://github.com/dcousens/easy-express-api.git
 ```
 
 
