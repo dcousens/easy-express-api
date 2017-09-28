@@ -1,5 +1,5 @@
 # easy-express-api
-A biased express wrapper for building APIs (with attached services).
+A biased express wrapper for building simple REST APIs (and attached services).
 
 
 ## Installation
@@ -15,15 +15,9 @@ require('dotenv').config()
 
 let debug = require('debug')
 let easyApi = require('easy-express-api')
-let fs = require('fs')
 
 easyApi({
   debug: debug('myApi'), // optional
-  https: process.env.HTTPS_CERT ? {
-    ca: fs.readFileSync(process.env.HTTPS_CA),
-    cert: fs.readFileSync(process.env.HTTPS_CERT),
-    key: fs.readFileSync(process.env.HTTPS_KEY)
-  } : null,
   port: process.env.PORT,
   routes: {
     '/auth': require('./routes/auth'),

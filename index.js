@@ -1,11 +1,10 @@
 let _http = require('http')
-let _https = require('https')
 let cors = require('cors')
 let debugWare = require('debug-ware')
 let express = require('express')
 let parallel = require('run-parallel')
 
-function build ({ debug, https, port, routes, services }, done) {
+module.exports = function build ({ debug, port, routes, services }, done) {
   let app = express()
   app.disable('etag')
   app.disable('x-powered-by')
@@ -13,12 +12,7 @@ function build ({ debug, https, port, routes, services }, done) {
   app.enable('strict routing')
   app.use(cors())
 
-  let server
-  if (https) {
-    server = _https.createServer(https, app)
-  } else {
-    server = _http.createServer(app)
-  }
+  let server = _http.createServer(app)
 
   // accept upgrade requests (for WebSockets)
   server.on('upgrade', (req, socket) => {
@@ -27,7 +21,7 @@ function build ({ debug, https, port, routes, services }, done) {
 
     // assign res.ws for easy websocket detection
     if (req.headers && /websocket/i.test(req.headers.upgrade)) {
-      req.ws = res.socket
+      req.ws = true
     }
 
     res.on('finish', () => res.socket.destroy())
@@ -61,11 +55,11 @@ function build ({ debug, https, port, routes, services }, done) {
       let parent = new express.Router()
       let routePaths = Object.keys(routes)
       if (routePaths.length === 0) return next()
+      if (debug) debug('Routes', 'Initializing')
 
-      // optional: debug logging
+      // (optional) debug logging
       if (debug) {
         parent.use(debugWare(debug))
-        debug('Routes', 'Initializing')
       }
 
       parallel(routePaths.map((path) => {
@@ -78,15 +72,12 @@ function build ({ debug, https, port, routes, services }, done) {
             if (err) return callback(err)
             if (debug) debug('Routes', `${path} ready`)
 
-            callback(null, { path, router })
+            parent.use(path, router)
+            callback()
           })
         }
       }), (err, results) => {
         if (err) return next(err)
-
-        results.forEach(({ path, router }) => {
-          parent.use(path, router)
-        })
 
         // last-ditch error-handling
         parent.use(function (err, req, res, _) {
@@ -101,8 +92,7 @@ function build ({ debug, https, port, routes, services }, done) {
 
         app.use(parent)
         if (debug) debug('Routes', 'Initialized (+ added)')
-
-        next(null, parent)
+        next()
       })
     }
   ], (err) => {
@@ -116,5 +106,3 @@ function build ({ debug, https, port, routes, services }, done) {
     if (done) done(null, server)
   })
 }
-
-module.exports = build
