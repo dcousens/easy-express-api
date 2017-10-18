@@ -4,15 +4,13 @@ A biased express wrapper for building simple REST APIs (and attached services).
 
 ## Installation
 ``` bash
-npm i debug dotenv https://github.com/dcousens/easy-express-api.git
+npm i debug https://github.com/dcousens/easy-express-api.git
 ```
 
 
 ## Examples
 
 ``` javascript
-require('dotenv').config()
-
 let debug = require('debug')
 let easyApi = require('easy-express-api')
 
