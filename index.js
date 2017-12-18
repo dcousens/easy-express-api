@@ -1,7 +1,12 @@
-let _http = require('http')
 let cors = require('cors')
-let debugWare = require('debug-ware')
+let debugWare
+try {
+  debugWare = require('debug-ware')
+} catch (e) {
+  debugWare = function noop () {}
+}
 let express = require('express')
+let http = require('http')
 let parallel = require('run-parallel')
 
 module.exports = function build ({ debug, port, routes, services }, done) {
@@ -12,11 +17,11 @@ module.exports = function build ({ debug, port, routes, services }, done) {
   app.enable('strict routing')
   app.use(cors())
 
-  let server = _http.createServer(app)
+  let server = http.createServer(app)
 
   // accept upgrade requests (for WebSockets)
   server.on('upgrade', (req, socket) => {
-    let res = new _http.ServerResponse(req)
+    let res = new http.ServerResponse(req)
     res.assignSocket(socket)
 
     // assign res.ws for easy websocket detection
@@ -80,7 +85,7 @@ module.exports = function build ({ debug, port, routes, services }, done) {
         if (err) return next(err)
 
         // last-ditch error-handling
-        parent.use(function (err, req, res, _) {
+        parent.use((err, req, res, _) => {
           if (debug) debug(err)
 
           if (process.env.NODE_ENV === 'development') {
