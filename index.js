@@ -2,12 +2,17 @@ let cors = require('cors')
 let debugWare
 try {
   debugWare = require('debug-ware')
-} catch (e) {
-  debugWare = function noop () {}
-}
+} catch (e) {}
+
 let express = require('express')
 let http = require('http')
 let parallel = require('run-parallel')
+
+function minimalSend (res, body) {
+  if (typeof body === 'string') res.send(body)
+  else if (Buffer.isBuffer(body)) res.send(body)
+  else res.json(body)
+}
 
 module.exports = function build ({ debug, port, routes, services }, done) {
   let app = express()
@@ -63,9 +68,25 @@ module.exports = function build ({ debug, port, routes, services }, done) {
       if (debug) debug('Routes', 'Initializing')
 
       // (optional) debug logging
-      if (debug) {
+      if (debug && debugWare) {
         parent.use(debugWare(debug))
       }
+
+      parent.use((req, res, next) => {
+        res.easy = function easy (err, body) {
+          if (err) {
+            res.status(typeof err === 'number' ? err : 400)
+            if (debug) debug(req.path, err)
+          } else {
+            res.status(200)
+          }
+
+          if (body !== undefined) minimalSend(res, body)
+          res.end()
+        }
+
+        next()
+      })
 
       parallel(routePaths.map((path) => {
         let module = routes[path]
