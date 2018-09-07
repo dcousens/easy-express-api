@@ -1,12 +1,12 @@
-let cors = require('cors')
+const cors = require('cors')
 let debugWare
 try {
   debugWare = require('debug-ware')
 } catch (e) {}
 
-let express = require('express')
-let http = require('http')
-let parallel = require('run-parallel')
+const express = require('express')
+const http = require('http')
+const parallel = require('run-parallel')
 
 function minimalSend (res, body) {
   if (typeof body === 'string') res.send(body)
@@ -15,18 +15,18 @@ function minimalSend (res, body) {
 }
 
 module.exports = function build ({ debug, port, routes, services }, done) {
-  let app = express()
+  const app = express()
   app.disable('etag')
   app.disable('x-powered-by')
   app.enable('case sensitive routing')
   app.enable('strict routing')
   app.use(cors())
 
-  let server = http.createServer(app)
+  const server = http.createServer(app)
 
   // accept upgrade requests (for WebSockets)
   server.on('upgrade', (req, socket) => {
-    let res = new http.ServerResponse(req)
+    const res = new http.ServerResponse(req)
     res.assignSocket(socket)
 
     // assign res.ws for easy websocket detection
@@ -42,12 +42,12 @@ module.exports = function build ({ debug, port, routes, services }, done) {
     (next) => {
       if (!services) return next()
 
-      let serviceNames = Object.keys(services)
+      const serviceNames = Object.keys(services)
       if (serviceNames.length === 0) return next()
       if (debug) debug('Services', 'Initializing')
 
       parallel(serviceNames.map((serviceName) => {
-        let module = services[serviceName]
+        const module = services[serviceName]
 
         return (callback) => module((err) => {
           if (err) return callback(err)
@@ -62,8 +62,8 @@ module.exports = function build ({ debug, port, routes, services }, done) {
     (next) => {
       if (!routes) return next()
 
-      let parent = new express.Router()
-      let routePaths = Object.keys(routes)
+      const parent = new express.Router()
+      const routePaths = Object.keys(routes)
       if (routePaths.length === 0) return next()
       if (debug) debug('Routes', 'Initializing')
 
@@ -89,10 +89,10 @@ module.exports = function build ({ debug, port, routes, services }, done) {
       })
 
       parallel(routePaths.map((path) => {
-        let module = routes[path]
+        const module = routes[path]
 
         return (callback) => {
-          let router = new express.Router()
+          const router = new express.Router()
 
           module(router, (err) => {
             if (err) return callback(err)
@@ -128,7 +128,6 @@ module.exports = function build ({ debug, port, routes, services }, done) {
 
     server.listen(port || 8080)
     if (debug) debug('Listening')
-
     if (done) done(null, server)
   })
 }
