@@ -32,12 +32,12 @@ Where each `route` is a function, internally provisioned with a fresh `router = 
 // ...
 
 module.exports = function (router, callback) {
-	router.get('/', (req, res) => {
-		res.status(200)
-	})
-	// ...
+  router.get('/', (req, res) => {
+    res.status(200)
+  })
+  // ...
 
-	callback(null || err)
+  callback(null || err)
 }
 ```
 
@@ -45,12 +45,12 @@ And each `service` is a function:
 
 ``` js
 module.exports = function (callback) {
-	// ... your service initialization here
-	setInterval(() => {
-		// ...
-	}, 1000)
+  // ... your service initialization here
+  setInterval(() => {
+    // ...
+  }, 1000)
 
-	callback()
+  callback()
 }
 ```
 
