@@ -1,6 +1,6 @@
 {
   "name": "easy-express-api",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "A biased express wrapper for building a REST API in Node.js (and attached services).",
   "main": "index.js",
   "scripts": {
