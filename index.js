@@ -43,9 +43,9 @@ module.exports = function build ({ middleware, routes, services }, done) {
       if (serviceNames.length === 0) return next()
 
       parallel(serviceNames.map((serviceName) => {
-        const module = services[serviceName]
+        const _module = services[serviceName]
 
-        return (callback) => module(callback)
+        return (callback) => _module(callback)
       }), next)
     },
     (next) => {

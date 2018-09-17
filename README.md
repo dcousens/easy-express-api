@@ -9,26 +9,27 @@ npm i easy-express-api
 
 
 ## Examples
-`.listen()` is not called until each `route` and `service` is ready.
-
 ``` javascript
 const debug = require('debug')
 const debugWare = require('debug-ware')
 const cors = require('cors')
-const easyApi = require('easy-express-api')
+const easy = require('easy-express-api')
 
-easyApi({
+easy({
   middleware: [
     cors(),
-    debugWare(debug('myApi'))
+    debugWare(debug('Foo'))
   ],
   routes: {
     '/3': require('./routes/3'),
   },
   services: {
-    'myservice': require('./services/loop')
+    'bar': require('./services/bar')
   }
-}).listen(80)
+}, (err, server) => {
+  if (err) throw err
+  server.listen(80)
+})
 ```
 
 Where each `route` is a function, internally provisioned with a fresh `router = new Express.Router()`:
