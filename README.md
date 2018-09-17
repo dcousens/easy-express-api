@@ -12,8 +12,8 @@ npm i debug debug-ware easy-express-api
 `.listen()` is not called until each `route` and `service` is ready.
 
 ``` javascript
-let debug = require('debug')
-let easyApi = require('easy-express-api')
+const debug = require('debug')
+const easyApi = require('easy-express-api')
 
 easyApi({
   debug: debug('myApi'), // optional
