@@ -1,7 +1,7 @@
 {
   "name": "easy-express-api",
   "version": "1.2.2",
-  "description": "A biased express wrapper for building a REST API in Node.js (and attached services).",
+  "description": "A biased express wrapper for building an express HTTP server",
   "main": "index.js",
   "scripts": {
     "lint": "standard",
@@ -23,11 +23,7 @@
     "standard": "*"
   },
   "dependencies": {
-    "cors": "^2.8.1",
     "express": "^4.14.0",
     "run-parallel": "^1.1.6"
-  },
-  "optionalDependencies": {
-    "debug-ware": "^1.0.0"
   }
 }

@@ -1,10 +1,10 @@
 # easy-express-api
-A biased express wrapper for building an express HTTP API server using Node.js.
+A biased express wrapper for building an express HTTP server using Node.js.
 
 
 ## Installation
 ``` bash
-npm i debug debug-ware easy-express-api
+npm i easy-express-api
 ```
 
 
@@ -13,18 +13,22 @@ npm i debug debug-ware easy-express-api
 
 ``` javascript
 const debug = require('debug')
+const debugWare = require('debug-ware')
+const cors = require('cors')
 const easyApi = require('easy-express-api')
 
 easyApi({
-  debug: debug('myApi'), // optional
-  port: 80, // required
+  middleware: [
+    cors(),
+    debugWare(debug('myApi'))
+  ],
   routes: {
-    '/v3': require('./routes/v3'),
+    '/3': require('./routes/3'),
   },
   services: {
     'myservice': require('./services/loop')
   }
-})
+}).listen(80)
 ```
 
 Where each `route` is a function, internally provisioned with a fresh `router = new Express.Router()`:
