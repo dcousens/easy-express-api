@@ -60,4 +60,4 @@ module.exports = function (callback) {
 ```
 
 
-## LICENSE [ISC](LICENSE)
+## LICENSE [MIT](LICENSE)
