@@ -16,7 +16,7 @@ module.exports = function build ({ middleware, routes, services }, done) {
   app.enable('strict routing')
 
   if (middleware) {
-    middleware.forEach((x) => app.use(x))
+    app.use(middleware)
   }
 
   const server = http.createServer(app)
