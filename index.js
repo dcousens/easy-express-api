@@ -96,7 +96,7 @@ module.exports = function build ({ middleware, routes, services }, done) {
     // last-ditch error-handling
     app.use((err, req, res, _) => {
       if (process.env.NODE_ENV === 'development') {
-        return res.status(500).json(err.message)
+        return res.status(500).json(err.toString())
       }
 
       res.status(400).end()
