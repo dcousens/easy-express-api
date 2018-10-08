@@ -86,18 +86,22 @@ module.exports = function build ({ middleware, routes, services }, done) {
       }), (err, results) => {
         if (err) return next(err)
 
-        // last-ditch error-handling
-        parent.use((err, req, res, _) => {
-          if (process.env.NODE_ENV === 'development') {
-            return res.status(400).json(err.message)
-          }
-
-          res.status(400).end()
-        })
-
         app.use(parent)
         next()
       })
     }
-  ], (err) => done(err, server))
+  ], (err) => {
+    if (err) return done(err)
+
+    // last-ditch error-handling
+    app.use((err, req, res, _) => {
+      if (process.env.NODE_ENV === 'development') {
+        return res.status(500).json(err.message)
+      }
+
+      res.status(400).end()
+    })
+
+    done(null, server)
+  })
 }
