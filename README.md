@@ -1,5 +1,5 @@
 # easy-express-api
-A biased express wrapper for building an express HTTP server using Node.js.
+A biased express.js wrapper for Node.js
 
 
 ## Installation
