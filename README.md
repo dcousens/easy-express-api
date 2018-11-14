@@ -1,5 +1,7 @@
 # easy-express-api
-A biased express.js wrapper for Node.js
+[![Version](https://img.shields.io/npm/v/easy-express-api.svg)](https://www.npmjs.org/package/easy-express-api)
+
+A biased express.js wrapper for HTTP servers.
 
 
 ## Installation
