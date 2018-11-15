@@ -25,9 +25,9 @@ easy({
   routes: {
     '/3': require('./routes/3'),
   },
-  services: {
-    'bar': require('./services/bar')
-  }
+  services: [
+    require('./services/bar')
+  ]
 }, (err, server) => {
   if (err) throw err
   server.listen(80)
