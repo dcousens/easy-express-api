@@ -12,6 +12,7 @@ module.exports = function build ({ middleware, routes, services }, done) {
   const app = express()
   app.disable('etag')
   app.disable('x-powered-by')
+//    app.disable('query parser')
   app.enable('case sensitive routing')
   app.enable('strict routing')
 
@@ -39,14 +40,7 @@ module.exports = function build ({ middleware, routes, services }, done) {
     (next) => {
       if (!services) return next()
 
-      const serviceNames = Object.keys(services)
-      if (serviceNames.length === 0) return next()
-
-      parallel(serviceNames.map((serviceName) => {
-        const _module = services[serviceName]
-
-        return (callback) => _module(callback)
-      }), next)
+      parallel(Object.values(services), next)
     },
     (next) => {
       if (!routes) return next()
