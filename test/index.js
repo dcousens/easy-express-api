@@ -11,7 +11,7 @@ tape('initializes without error (returning server)', function (t) {
       }
     ],
     routes: {
-      '/3': function (router, callback) {
+      '/v3': function (router, callback) {
         t.pass()
         setTimeout(callback, 100)
       }
@@ -34,7 +34,7 @@ tape('handles error in routes initialization', function (t) {
 
   easy({
     routes: {
-      '/3': function (router, callback) {
+      '/v3': function (router, callback) {
         setTimeout(() => callback(new Error('oops')), 100)
       }
     },
@@ -56,7 +56,7 @@ tape('handles error in services initialization', function (t) {
 
   easy({
     routes: {
-      '/3': function (router, callback) {
+      '/v3': function (router, callback) {
         callback()
       }
     },
@@ -70,5 +70,27 @@ tape('handles error in services initialization', function (t) {
     t.throws(() => {
       throw err
     }, /oops/)
+  })
+})
+
+tape('supports services as Array', function (t) {
+  t.plan(5)
+
+  easy({
+    routes: {},
+    services: [
+      function (callback) {
+        t.pass()
+        callback()
+      },
+      function (callback) {
+        t.pass()
+        callback()
+      }
+    ]
+  }, (err, server) => {
+    t.error(err)
+    t.ok(server)
+    t.pass()
   })
 })

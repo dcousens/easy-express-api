@@ -23,7 +23,7 @@ easy({
     debugWare(debug('Foo'))
   ],
   routes: {
-    '/3': require('./routes/3'),
+    '/v3': require('./routes/v3'),
   },
   services: [
     require('./services/bar')
