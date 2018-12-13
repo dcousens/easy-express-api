@@ -3,6 +3,8 @@
 
 A biased express.js wrapper for HTTP servers.
 
+**WARNING:** `etag`s are default disabled; with an assumption of external cache control and configuration.
+
 
 ## Installation
 ``` bash

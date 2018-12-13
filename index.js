@@ -11,8 +11,8 @@ function minimalSend (res, body) {
 module.exports = function build ({ middleware, routes, services }, done) {
   const app = express()
   app.disable('etag')
-  app.disable('x-powered-by')
   // app.disable('query parser')
+  app.disable('x-powered-by')
   app.enable('case sensitive routing')
   app.enable('strict routing')
 
