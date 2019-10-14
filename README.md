@@ -1,3 +1,5 @@
+# DEPRECATED: `async` syntax generally removes the need for this
+
 # easy-express-api
 [![Version](https://img.shields.io/npm/v/easy-express-api.svg)](https://www.npmjs.org/package/easy-express-api)
 
