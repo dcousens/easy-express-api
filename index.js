@@ -1,14 +1,23 @@
 const express = require('express')
 const http = require('http')
-const parallel = require('run-parallel')
 
-function minimalSend (res, body) {
-  if (typeof body === 'string') res.send(body)
-  else if (Buffer.isBuffer(body)) res.send(body)
-  else res.json(body)
+function easySend (res, err, body) {
+  if (err) {
+    res.status(typeof err === 'number' ? err : 400)
+  } else {
+    res.status(200)
+  }
+
+  if (body !== undefined) {
+    if (typeof body === 'string') res.send(body)
+    else if (Buffer.isBuffer(body)) res.send(body)
+    else res.json(body)
+  }
+
+  res.end()
 }
 
-module.exports = function build ({ middleware, routes, services }, done) {
+module.exports = async function build ({ middleware, routes, services }, done) {
   const app = express()
   app.disable('etag')
   // app.disable('query parser')
@@ -36,66 +45,36 @@ module.exports = function build ({ middleware, routes, services }, done) {
     app(req, res)
   })
 
-  parallel([
-    (next) => {
-      if (!services) return next()
-
-      parallel(Object.values(services), next)
-    },
-    (next) => {
-      if (!routes) return next()
-
-      const parent = new express.Router()
-      const routePaths = Object.keys(routes)
-      if (routePaths.length === 0) return next()
-
-      parent.use((req, res, next) => {
-        res.easy = function easy (err, body) {
-          if (err) {
-            res.status(typeof err === 'number' ? err : 400)
-          } else {
-            res.status(200)
-          }
-
-          if (body !== undefined) minimalSend(res, body)
-          res.end()
-        }
-
-        next()
-      })
-
-      parallel(routePaths.map((path) => {
-        const module = routes[path]
-
-        return (callback) => {
-          const router = new express.Router()
-
-          module(router, (err) => {
-            if (err) return callback(err)
-
-            parent.use(path, router)
-            callback()
-          })
-        }
-      }), (err, results) => {
-        if (err) return next(err)
-
-        app.use(parent)
-        next()
-      })
+  if (services) {
+    for (const i in services) {
+      const service = services[i]
+      await service()
     }
-  ], (err) => {
-    if (err) return done(err)
+  }
 
-    // last-ditch error-handling
-    app.use((err, req, res, _) => {
-      if (process.env.NODE_ENV === 'development') {
-        return res.status(500).json(err.toString())
-      }
-
-      res.status(400).end()
-    })
-
-    done(null, server)
+  // inject utility function
+  app.use((req, res, next) => {
+    res.easy = easySend.bind(null, res)
+    next()
   })
+
+  if (routes) {
+    for (const path in routes) {
+      const module = routes[path]
+      const router = new express.Router()
+      await module(router)
+      app.use(path, router)
+    }
+  }
+
+  // last-ditch error-handling
+  app.use((err, req, res, _) => {
+    if (process.env.NODE_ENV === 'development') {
+      return res.status(500).json(err.toString())
+    }
+
+    res.status(400).end()
+  })
+
+  return server
 }

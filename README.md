@@ -30,36 +30,32 @@ easy({
   services: [
     require('./services/bar')
   ]
-}, (err, server) => {
-  if (err) throw err
+}).then((server) => {
   server.listen(80)
 })
 ```
 
-Where each `route` is a function, internally provisioned with a fresh `router = new Express.Router()`:
+Where each `route` is an `async` function, internally provisioned with a fresh `router = new Express.Router()`:
 ``` js
 // ...
 
-module.exports = function (router, callback) {
+module.exports = async function (router) {
   router.get('/', (req, res) => {
     res.status(200)
   })
-  // ...
 
-  callback(null || err)
+  // ...
 }
 ```
 
-And each `service` is a function:
+And each `service` is an `async` function:
 
 ``` js
-module.exports = function (callback) {
+module.exports = async function () {
   // ... your service initialization here
   setInterval(() => {
     // ...
   }, 1000)
-
-  callback()
 }
 ```
 
